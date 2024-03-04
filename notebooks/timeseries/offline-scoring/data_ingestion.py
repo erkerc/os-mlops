@@ -3,15 +3,15 @@ from os import environ
 import boto3
 
 
-def ingest_data(data_object_name='', data_folder='./data'):
+def ingest_data(data_object_name=''):
     print('Commencing data ingestion.')
 
-    s3_endpoint_url = environ.get('AWS_S3_ENDPOINT')
-    s3_access_key = environ.get('AWS_ACCESS_KEY_ID')
-    s3_secret_key = environ.get('AWS_SECRET_ACCESS_KEY')
-    s3_bucket_name = environ.get('AWS_S3_BUCKET')
+    s3_endpoint_url = environ.get('S3_ENDPOINT_URL')
+    s3_access_key = environ.get('S3_ACCESS_KEY_ID')
+    s3_secret_key = environ.get('S3_SECRET_ACCESS_KEY')
+    s3_bucket_name = environ.get('S3_BUCKET')
     data_object_name = data_object_name or environ.get(
-        'data_object_name'
+        'data_object_name', 'raw-data.csv'
     )
 
     print(f'Downloading data "{data_object_name}" '
@@ -24,12 +24,10 @@ def ingest_data(data_object_name='', data_folder='./data'):
     )
 
     s3_client.download_file(
-        s3_bucket_name,
-        f'data/{data_object_name}',
-        f'{data_folder}/data.csv'
+        s3_bucket_name, data_object_name, 'raw-data.csv'
     )
     print('Finished data ingestion.')
 
 
 if __name__ == '__main__':
-    ingest_data(data_folder='.')
+    ingest_data()

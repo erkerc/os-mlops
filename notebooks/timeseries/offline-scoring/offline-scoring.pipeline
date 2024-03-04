@@ -9,18 +9,16 @@
       "id": "primary",
       "nodes": [
         {
-          "id": "09b48e95-e953-4a59-977b-bc751bc45798",
+          "id": "022ba1c7-40a2-43c7-bf25-8d0f58cd6a4b",
           "type": "execution_node",
           "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
-              "pipeline_parameters": [
-                "data_object_name"
-              ],
+              "pipeline_parameters": [],
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [
-                "raw_data.csv"
+                "raw-data.csv"
               ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
@@ -34,9 +32,9 @@
             "label": "",
             "ui_data": {
               "label": "data_ingestion.py",
-              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
-              "x_pos": 199,
-              "y_pos": 267,
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
+              "x_pos": 97,
+              "y_pos": 233,
               "description": "Run Python script"
             }
           },
@@ -70,76 +68,7 @@
           ]
         },
         {
-          "id": "b40184b7-b124-4c6a-8fc0-1a58db3859fc",
-          "type": "execution_node",
-          "op": "execute-python-node",
-          "app_data": {
-            "component_parameters": {
-              "pipeline_parameters": [
-                "epoch_count",
-                "learning_rate"
-              ],
-              "dependencies": [],
-              "include_subdirectories": false,
-              "outputs": [
-                "model.onnx"
-              ],
-              "env_vars": [],
-              "kubernetes_pod_annotations": [],
-              "kubernetes_pod_labels": [],
-              "kubernetes_secrets": [],
-              "kubernetes_shared_mem_size": {},
-              "kubernetes_tolerations": [],
-              "mounted_volumes": [],
-              "filename": "model_training.py"
-            },
-            "label": "",
-            "ui_data": {
-              "label": "model_training.py",
-              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
-              "x_pos": 671,
-              "y_pos": 266,
-              "description": "Run Python script"
-            }
-          },
-          "inputs": [
-            {
-              "id": "inPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Input Port"
-                }
-              },
-              "links": [
-                {
-                  "id": "d0e01d39-77fe-4968-adbb-ecd7d9c5325a",
-                  "node_id_ref": "eceab942-a848-4482-925d-9ecdd099256f",
-                  "port_id_ref": "outPort"
-                }
-              ]
-            }
-          ],
-          "outputs": [
-            {
-              "id": "outPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Output Port"
-                }
-              }
-            }
-          ]
-        },
-        {
-          "id": "eceab942-a848-4482-925d-9ecdd099256f",
+          "id": "e5dceea6-7a41-4700-b403-9dcba54a6af6",
           "type": "execution_node",
           "op": "execute-python-node",
           "app_data": {
@@ -147,8 +76,7 @@
               "dependencies": [],
               "include_subdirectories": false,
               "outputs": [
-                "training_samples.npy",
-                "training_labels.npy"
+                "preprocessed-data.csv"
               ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
@@ -162,9 +90,9 @@
             "label": "",
             "ui_data": {
               "label": "preprocessing.py",
-              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
-              "x_pos": 428,
-              "y_pos": 260,
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
+              "x_pos": 295,
+              "y_pos": 233,
               "description": "Run Python script"
             }
           },
@@ -182,8 +110,8 @@
               },
               "links": [
                 {
-                  "id": "2627b0ee-8ed7-4fc2-9381-14726af10260",
-                  "node_id_ref": "09b48e95-e953-4a59-977b-bc751bc45798",
+                  "id": "d22e1d40-3d39-46c3-addd-57dd48dab3c0",
+                  "node_id_ref": "022ba1c7-40a2-43c7-bf25-8d0f58cd6a4b",
                   "port_id_ref": "outPort"
                 }
               ]
@@ -205,80 +133,19 @@
           ]
         },
         {
-          "id": "8124ead5-6286-4483-821e-6369a7083d0b",
-          "type": "execution_node",
-          "op": "execute-python-node",
-          "app_data": {
-            "component_parameters": {
-              "dependencies": [],
-              "include_subdirectories": false,
-              "outputs": [],
-              "env_vars": [],
-              "kubernetes_pod_annotations": [],
-              "kubernetes_pod_labels": [],
-              "kubernetes_secrets": [],
-              "kubernetes_shared_mem_size": {},
-              "kubernetes_tolerations": [],
-              "mounted_volumes": [],
-              "filename": "model_validation.py"
-            },
-            "label": "",
-            "ui_data": {
-              "label": "model_validation.py",
-              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
-              "x_pos": 895,
-              "y_pos": 267,
-              "description": "Run Python script"
-            }
-          },
-          "inputs": [
-            {
-              "id": "inPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Input Port"
-                }
-              },
-              "links": [
-                {
-                  "id": "144ac4c4-750a-4a34-b072-5e966ad32d1c",
-                  "node_id_ref": "b40184b7-b124-4c6a-8fc0-1a58db3859fc",
-                  "port_id_ref": "outPort"
-                }
-              ]
-            }
-          ],
-          "outputs": [
-            {
-              "id": "outPort",
-              "app_data": {
-                "ui_data": {
-                  "cardinality": {
-                    "min": 0,
-                    "max": -1
-                  },
-                  "label": "Output Port"
-                }
-              }
-            }
-          ]
-        },
-        {
-          "id": "1d3834c6-5f1b-4b5e-a45a-51c0ca032c14",
+          "id": "53699294-8b5e-4310-a6c3-4feb990c3fe3",
           "type": "execution_node",
           "op": "execute-python-node",
           "app_data": {
             "component_parameters": {
               "pipeline_parameters": [
-                "model_object_prefix"
+                "model_object_name"
               ],
               "dependencies": [],
               "include_subdirectories": false,
-              "outputs": [],
+              "outputs": [
+                "model.joblib"
+              ],
               "env_vars": [],
               "kubernetes_pod_annotations": [],
               "kubernetes_pod_labels": [],
@@ -286,14 +153,72 @@
               "kubernetes_shared_mem_size": {},
               "kubernetes_tolerations": [],
               "mounted_volumes": [],
-              "filename": "model_upload.py"
+              "filename": "model_loading.py"
             },
             "label": "",
             "ui_data": {
-              "label": "model_upload.py",
-              "image": "/notebook/maxm/fraud-detection/static/elyra/python.svg",
-              "x_pos": 1106,
-              "y_pos": 269,
+              "label": "model_loading.py",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
+              "x_pos": 205,
+              "y_pos": 362,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "b1de295b-59f5-4dda-82bf-e6d2bf0503eb",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "predictions.csv"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "scoring.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "scoring.py",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
+              "x_pos": 632,
+              "y_pos": 326,
               "description": "Run Python script"
             }
           },
@@ -311,8 +236,141 @@
               },
               "links": [
                 {
-                  "id": "7358fb20-f54c-4cbf-9c34-8028d36b19f6",
-                  "node_id_ref": "8124ead5-6286-4483-821e-6369a7083d0b",
+                  "id": "33bbbf10-0a6a-414a-b1af-9debf985d7c2",
+                  "node_id_ref": "53699294-8b5e-4310-a6c3-4feb990c3fe3",
+                  "port_id_ref": "outPort"
+                },
+                {
+                  "id": "87c3b897-eea3-490c-b1d3-14bee3fab0df",
+                  "node_id_ref": "ac7c3b37-48a7-4ce8-967a-6c4448f50cf6",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "f2d05ef8-3d14-4a0b-bc72-13097acd8f22",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "results_upload.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "results_upload.py",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
+              "x_pos": 851,
+              "y_pos": 319,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "8c168e44-8f04-42f1-8c37-4af368a7b9b4",
+                  "node_id_ref": "b1de295b-59f5-4dda-82bf-e6d2bf0503eb",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "ac7c3b37-48a7-4ce8-967a-6c4448f50cf6",
+          "type": "execution_node",
+          "op": "execute-python-node",
+          "app_data": {
+            "component_parameters": {
+              "dependencies": [],
+              "include_subdirectories": false,
+              "outputs": [
+                "features.pickle"
+              ],
+              "env_vars": [],
+              "kubernetes_pod_annotations": [],
+              "kubernetes_pod_labels": [],
+              "kubernetes_secrets": [],
+              "kubernetes_shared_mem_size": {},
+              "kubernetes_tolerations": [],
+              "mounted_volumes": [],
+              "filename": "feature_extraction.py"
+            },
+            "label": "",
+            "ui_data": {
+              "label": "feature_extraction.py",
+              "image": "/notebook/timeseries-project/jupyter/static/elyra/python.svg",
+              "x_pos": 487,
+              "y_pos": 234,
+              "description": "Run Python script"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "446ba3f6-8b02-4124-aae6-6fd3ff44d814",
+                  "node_id_ref": "e5dceea6-7a41-4700-b403-9dcba54a6af6",
                   "port_id_ref": "outPort"
                 }
               ]
@@ -341,73 +399,46 @@
         "version": 8,
         "runtime_type": "KUBEFLOW_PIPELINES",
         "properties": {
-          "name": "model-training",
+          "name": "offline-scoring",
           "runtime": "Data Science Pipelines",
           "pipeline_defaults": {
             "kubernetes_shared_mem_size": {},
-            "kubernetes_tolerations": [],
             "mounted_volumes": [],
-            "kubernetes_pod_annotations": [],
+            "kubernetes_tolerations": [],
             "kubernetes_pod_labels": [],
+            "kubernetes_pod_annotations": [],
             "env_vars": [],
             "kubernetes_secrets": [
               {
-                "env_var": "AWS_S3_ENDPOINT",
-                "name": "aws-connection-fraud-detection",
+                "env_var": "S3_ENDPOINT_URL",
+                "name": "aws-connection-user-bucket",
                 "key": "AWS_S3_ENDPOINT"
               },
               {
-                "env_var": "AWS_ACCESS_KEY_ID",
-                "name": "aws-connection-fraud-detection",
+                "env_var": "S3_ACCESS_KEY_ID",
+                "name": "aws-connection-user-bucket",
                 "key": "AWS_ACCESS_KEY_ID"
               },
               {
-                "env_var": "AWS_SECRET_ACCESS_KEY",
-                "name": "aws-connection-fraud-detection",
+                "env_var": "S3_SECRET_ACCESS_KEY",
+                "name": "aws-connection-user-bucket",
                 "key": "AWS_SECRET_ACCESS_KEY"
               },
               {
-                "env_var": "AWS_S3_BUCKET",
-                "name": "aws-connection-fraud-detection",
+                "env_var": "S3_BUCKET",
+                "name": "aws-connection-user-bucket",
                 "key": "AWS_S3_BUCKET"
               }
             ],
-            "runtime_image": "quay.io/mmurakam/runtimes:fraud-detection-v0.1.0"
+            "runtime_image": "quay.io/mmurakam/runtimes:timeseries-v0.2.0"
           },
           "pipeline_parameters": [
             {
-              "name": "data_object_name",
+              "name": "model_object_name",
               "description": "",
               "default_value": {
                 "type": "String",
-                "value": "training-data.csv"
-              },
-              "required": false
-            },
-            {
-              "name": "epoch_count",
-              "description": "",
-              "default_value": {
-                "type": "Integer",
-                "value": 20
-              },
-              "required": false
-            },
-            {
-              "name": "learning_rate",
-              "description": "",
-              "default_value": {
-                "type": "Float",
-                "value": 0.001
-              },
-              "required": false
-            },
-            {
-              "name": "model_object_prefix",
-              "description": "",
-              "default_value": {
-                "type": "String",
-                "value": "model"
+                "value": "model-latest.joblib"
               },
               "required": false
             }
