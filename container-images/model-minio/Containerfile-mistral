@@ -11,11 +11,7 @@ RUN useradd -u 1000 -g 0 modelmesh && \
 
 WORKDIR /data1
 
-ARG VERSION_TAG=1.1.0
-
-RUN git clone https://github.com/mamurak/os-mlops-artefacts.git . && \
-    git checkout ${VERSION_TAG} && \
-    rm -r README.md .git .gitattributes
+RUN git clone https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2 .
 
 RUN chown -R 1000:0 /data1 && \
     chgrp -R 0 /data1 && \
