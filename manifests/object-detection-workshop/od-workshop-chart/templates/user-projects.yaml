@@ -266,10 +266,12 @@ spec:
               protocol: TCP
           imagePullPolicy: IfNotPresent
           terminationMessagePolicy: File
-          image: quay.io/mmurakam/minio:minio-v0.4.2
+          image: quay.io/mmurakam/minio:minio-v1.3.1
           args:
             - server
             - /data1
+            - --console-address
+            - :9090
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       dnsPolicy: ClusterFirst
@@ -288,11 +290,15 @@ metadata:
 spec:
   ipFamilies:
     - IPv4
-  ports:    
+  ports:
     - name: http
       protocol: TCP
       port: 9000
       targetPort: 9000
+    - name: ui
+      protocol: TCP
+      port: 9090
+      targetPort: 9090
   internalTrafficPolicy: Cluster
   type: ClusterIP
   ipFamilyPolicy: SingleStack
@@ -311,7 +317,7 @@ spec:
     name: minio-service
     weight: 100
   port:
-    targetPort: http
+    targetPort: ui
   wildcardPolicy: None
   tls:
     termination: edge

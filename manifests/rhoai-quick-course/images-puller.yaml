@@ -1,0 +1,137 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: image-puller
+  namespace: rhods-notebooks
+  labels:
+    k8s-app: image-puller
+spec:
+  selector:
+    matchLabels:
+      name: image-puller
+  template:
+    metadata:
+      labels:
+        name: image-puller
+    spec:
+      containers:
+        - name: minimal-python-workbench
+          image: quay.io/modh/odh-minimal-notebook-container@sha256:03b10a8b90de4bdee0fdf7b4d11fe867f99149fe72f2b7fcd438e0a1f29db3e2
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: standard-datascience-workbench
+          image: quay.io/modh/odh-generic-data-science-notebook@sha256:6e10eaeb233fb7a3d5c2832906a47042ba83149f5912b8a88af5de4b3b19af41
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: fraud-detection-workbench
+          image: quay.io/mmurakam/workbenches:fraud-detection-v1.0.1
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: vscode-kfp-workbench
+          image: quay.io/mmurakam/workbenches:vscode-kfp-v0.2.1
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: pytorch-workbench
+          image: quay.io/modh/odh-pytorch-notebook@sha256:c812c544eceeec994b04bd4f1cba8dc38e15a88637a06556a21ed26f808c4b4a
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: tensorflow-workbench
+          image: quay.io/modh/cuda-notebooks@sha256:d4a01e0b236566ed3ac828658dc6b9db4306e22e89402bd0170a288a82c0e578
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: serving-queue
+          image: registry.redhat.io/openshift-serverless-1/serving-queue-rhel8@sha256:a0d0c8517ff470e3afac4c90df5e6541d974507feb50eac9719f87fcf78bba96
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: kserve-storage-initializer
+          image: quay.io/modh/kserve-storage-initializer@sha256:ae57d82e1fd85135dd257cf6f4c9f5dfe7ac92cd6d6bb634f79999bafbd602ac
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: servicemesh-proxy
+          image: registry.redhat.io/openshift-service-mesh/proxyv2-rhel8@sha256:91d76a248eec9ddac000d36339df4ac6311e387bf32bb301c610ce4b93731766
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: tgis-runtime
+          image: quay.io/modh/text-generation-inference@sha256:e4d24fd401fd4eb89b49b4ab07e0c08389384d4a672b240e98a03ad7f9ef1c85
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: fraud-detection-runtime
+          image: quay.io/mmurakam/runtimes:fraud-detection-v0.1.0
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+        - name: langchain-workbench
+          image: quay.io/mmurakam/workbenches:insurance-claims-v0.1.0
+          command: ["tail"]
+          args: ["-f", "/dev/null"]
+          resources:
+            limits:
+              memory: 20Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
