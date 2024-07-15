@@ -33,7 +33,7 @@ metadata:
   annotations:
     opendatahub.io/notebook-image-desc: ''
     opendatahub.io/notebook-image-name: HF Codeflare
-    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:hf-codeflare-v0.3.0'
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:hf-codeflare-v0.6.0'
   name: hf-codeflare
   namespace: redhat-ods-applications
   labels:
@@ -52,6 +52,18 @@ spec:
       from:
         kind: DockerImage
         name: 'quay.io/mmurakam/workbenches:hf-codeflare-v0.3.0'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+    - name: v0.6.0
+      annotations:
+        opendatahub.io/notebook-python-dependencies: '[{"name":"Codeflare","version":"0.12.0"}]'
+        opendatahub.io/notebook-software: '[{"name":"CUDA","version":"11.8"},{"name":"Python","version":"v3.9"},{"name":"PyTorch","version":"1.13"}]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:hf-codeflare-v0.6.0'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:hf-codeflare-v0.6.0'
       importPolicy:
         importMode: Legacy
       referencePolicy:
@@ -93,7 +105,7 @@ metadata:
   annotations:
     opendatahub.io/notebook-image-desc: ''
     opendatahub.io/notebook-image-name: Caikit
-    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:caikit-v0.1.0'
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:caikit-v0.2.0'
   name: custom-caikit
   namespace: redhat-ods-applications
   labels:
@@ -104,14 +116,14 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: caikit-v0.1.0
+    - name: caikit-v0.2.0
       annotations:
         opendatahub.io/notebook-python-dependencies: '[]'
         opendatahub.io/notebook-software: '[]'
-        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:caikit-v0.1.0'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:caikit-v0.2.0'
       from:
         kind: DockerImage
-        name: 'quay.io/mmurakam/workbenches:caikit-v0.1.0'
+        name: 'quay.io/mmurakam/workbenches:caikit-v0.2.0'
       importPolicy:
         importMode: Legacy
       referencePolicy:
@@ -164,10 +176,10 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: "1.0.1"
+    - name: "1.0.4"
       from:
         kind: DockerImage
-        name: quay.io/mmurakam/workbenches:spark-v1.0.1
+        name: quay.io/mmurakam/workbenches:spark-v1.0.4
       importPolicy: {}
       referencePolicy:
         type: Local
@@ -193,10 +205,10 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: "2023a"
+    - name: "2023b"
       from:
         kind: DockerImage
-        name: quay.io/opendatahub-contrib/workbench-images:jupyter-optapy-ubi9-py39_2023a_20230101
+        name: quay.io/opendatahub-contrib/workbench-images:jupyter-optapy-ubi9-py39_2023b_20230216	
       importPolicy: {}
       referencePolicy:
         type: Local
@@ -309,10 +321,10 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: "1.0.0"
+    - name: "1.0.3"
       from:
         kind: DockerImage
-        name: quay.io/mmurakam/workbenches:trino-v1.0.0
+        name: quay.io/mmurakam/workbenches:trino-v1.0.3
       importPolicy: {}
       referencePolicy:
         type: Local

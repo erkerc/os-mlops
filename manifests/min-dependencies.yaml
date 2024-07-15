@@ -1,0 +1,105 @@
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: fraud-detection
+  labels:
+    kubernetes.io/metadata.name: fraud-detection
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: fraud-detection
+spec:
+  finalizers:
+    - kubernetes
+---
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: object-detection
+  labels:
+    kubernetes.io/metadata.name: object-detection
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: object-detection
+spec:
+  finalizers:
+    - kubernetes
+---
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: ray-demo
+  labels:
+    kubernetes.io/metadata.name: ray-demo
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: ray-demo
+spec:
+  finalizers:
+    - kubernetes
+---
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: spark-demo
+  labels:
+    kubernetes.io/metadata.name: spark-demo
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: spark-demo
+spec:
+  finalizers:
+    - kubernetes
+---
+kind: Project
+apiVersion: project.openshift.io/v1
+metadata:
+  name: llm-demo
+  labels:
+    kubernetes.io/metadata.name: llm-demo
+    maistra.io/member-of: istio-system
+    modelmesh-enabled: 'false'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    openshift.io/description: ''
+    openshift.io/display-name: llm-demo
+spec:
+  finalizers:
+    - kubernetes
+---
+apiVersion: project.openshift.io/v1
+kind: Project
+metadata:
+  name: minio
+spec:
+  finalizers:
+  - kubernetes
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: production-project
+  labels:
+    kubernetes.io/metadata.name: production-project
+    modelmesh-enabled: 'true'
+    opendatahub.io/dashboard: 'true'
+  annotations:
+    openshift.io/display-name: production-project
+spec:
+  finalizers:
+    - kubernetes
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: ci-cd
+spec:
+  finalizers:
+    - kubernetes

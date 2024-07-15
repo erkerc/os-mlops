@@ -1,0 +1,21 @@
+apiVersion: authorization.openshift.io/v1
+groupNames: null
+kind: RoleBinding
+metadata:
+  annotations:
+    argocds.argoproj.io/name: openshift-gitops
+    argocds.argoproj.io/namespace: openshift-gitops
+  labels:
+    app.kubernetes.io/managed-by: openshift-gitops
+    app.kubernetes.io/name: argocd-application-controller
+    app.kubernetes.io/part-of: argocd
+  name: openshift-gitops-argocd-application-controller
+roleRef:
+  name: openshift-gitops-argocd-application-controller
+  namespace: ic-shared-db
+subjects:
+- kind: ServiceAccount
+  name: openshift-gitops-argocd-application-controller
+  namespace: openshift-gitops
+userNames:
+- system:serviceaccount:openshift-gitops:openshift-gitops-argocd-application-controller

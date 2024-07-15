@@ -1,0 +1,37 @@
+apiVersion: pfe.rhpds.com/v1
+kind: Gitea
+metadata:
+  name: gitea
+  namespace: gitea
+spec:
+  giteaUserNumber: 20
+  giteaAdminPasswordLength: 16
+  giteaImagePullPolicy: IfNotPresent
+  giteaWebhookAllowedHostList: 'external,private'
+  giteaGenerateUserFormat: rhoai-user
+  giteaMigrateRepositories: true
+  giteaUserEmailDomain: opentlc.com
+  postgresqlImage: registry.redhat.io/rhel8/postgresql-12
+  giteaVolumeSize: 10Gi
+  giteaEnableCaptcha: false
+  giteaAllowCreateOrganization: true
+  postgresqlImageTagPullPolicy: IfNotPresent
+  giteaWebhookSkipTlsVerify: false
+  giteaAdminUser: giteaadmin
+  giteaImage: quay.io/rhpds/gitea
+  giteaImageTag: 1.20.0
+  postgresqlVolumeSize: 10Gi
+  giteaEnableNotifyMail: false
+  giteaDisableRegistration: false
+  postgresqlImageTag: latest
+  giteaRepositoriesList:
+    - name: parasol-insurance
+      private: false
+      repo: 'https://github.com/rh-aiservices-bu/parasol-insurance'
+  giteaUserPassword: rhoaitr
+  giteaRegisterEmailConfirm: false
+  giteaUserPasswordLength: 16
+  giteaAdminEmail: giteaadmin@opentlc.com
+  #giteaAdminPassword: XXXXXXXX
+  giteaCreateUsers: true
+  giteaSsl: true

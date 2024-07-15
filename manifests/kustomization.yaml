@@ -4,12 +4,9 @@ resources:
 - odh/custom-notebooks.yaml
 - demo-manifests/fraud-detection.yaml
 - demo-manifests/object-detection.yaml
-- demo-manifests/spark.yaml
 - odh/custom-serving-runtimes.yaml
-- demo-manifests/llm-demo.yaml
-- demo-manifests/ray-demo.yaml
-# - demo-manifests/insuranceclaims-applicationset.yaml
-# - ocp/user-workload-monitoring.yaml
+- demo-manifests/insuranceclaims-applicationset.yaml
+- ocp/user-workload-monitoring.yaml
 - ocp/gpu-dashboard.yaml
 - ocp/rbac.yaml
 - odh/dist-workloads.yaml
