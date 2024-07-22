@@ -3,26 +3,16 @@ kind: Job
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
-    batch.kubernetes.io/job-tracking: ""
   labels:
     app.kubernetes.io/instance: database-app
     component: shared-database
   name: db-init-job
 spec:
-  backoffLimit: 4
   completionMode: NonIndexed
-  completions: 1
-  parallelism: 1
-  selector:
-    matchLabels:
-      controller-uid: 1bb88d0a-1d7e-483f-950c-54b170c5195c
-  suspend: false
   template:
     metadata:
-      creationTimestamp: null
       labels:
         component: shared-database
-        controller-uid: 1bb88d0a-1d7e-483f-950c-54b170c5195c
         job-name: db-init-job
     spec:
       containers:
@@ -50,7 +40,7 @@ spec:
               key: database-password
               name: demodb
         - name: POSTGRESQL_DATABASE_HOST
-          value: demodb.shared-database.svc.cluster.local
+          value: shared-database
         image: registry.redhat.io/rhel9/postgresql-13:latest
         imagePullPolicy: Always
         name: postgresql
@@ -69,7 +59,7 @@ spec:
           connection..."; sleep 2; done;
         env:
         - name: POSTGRESQL_DATABASE
-          value: demodb.shared-database.svc.cluster.local
+          value: shared-database
         image: busybox:1.28
         imagePullPolicy: IfNotPresent
         name: wait-for-db

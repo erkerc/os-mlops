@@ -8,6 +8,16 @@
             "name": "demodb",
             "database": "demodb",
             "username": "demodb"
+        },
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "ykbpocdb",
+            "database": "demodb",
+            "username": "demodb",
+            "password": "demodb"
         }
     ]
 }

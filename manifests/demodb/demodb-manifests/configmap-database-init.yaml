@@ -303,6 +303,6 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "1"
   labels:
-    app.kubernetes.io/instance: ic-shared-database-app
-    component: ic-shared-db
+    app.kubernetes.io/instance: database-app
+    component: shared-database
   name: sql-script-configmap

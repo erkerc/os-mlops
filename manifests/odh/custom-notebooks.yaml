@@ -292,10 +292,10 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: "1.0.5"
+    - name: "v1.0"
       from:
         kind: DockerImage
-        name: quay.io/mmurakam/workbenches:object-detection-v1.0.5
+        name: quay.io/eercan/workbenches/object-detection:v1.0
       importPolicy: {}
       referencePolicy:
         type: Local
