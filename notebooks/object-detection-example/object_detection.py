@@ -9,7 +9,7 @@ def detect_objects(
         prediction_url,
         classes_count,
         token='',
-        confidence_threshold=0.2,
+        confidence_threshold=0.5,
         iou_threshold=0.6,
         ):
 

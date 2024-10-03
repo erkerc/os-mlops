@@ -134,9 +134,9 @@ apiVersion: image.openshift.io/v1
 metadata:
   annotations:
     opendatahub.io/notebook-image-desc: ''
-    opendatahub.io/notebook-image-name: VS Code mit KFP SDK
+    opendatahub.io/notebook-image-name: VS Code with KFP SDK
     opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:vscode-kfp-v0.2.1'
-  name: custom-vs-code-mit-kfp-sdk
+  name: custom-vs-code-with-kfp-sdk
   namespace: redhat-ods-applications
   labels:
     app.kubernetes.io/created-by: byon
@@ -146,7 +146,7 @@ spec:
   lookupPolicy:
     local: true
   tags:
-    - name: vscode-kfp-v0.2.1
+    - name: '0.2.1'
       annotations:
         opendatahub.io/notebook-python-dependencies: '[]'
         opendatahub.io/notebook-software: '[]'
@@ -154,6 +154,18 @@ spec:
       from:
         kind: DockerImage
         name: 'quay.io/mmurakam/workbenches:vscode-kfp-v0.2.1'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+    - name: '1.0.1'
+      annotations:
+        opendatahub.io/notebook-python-dependencies: '[]'
+        opendatahub.io/notebook-software: '[]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:vscode-kfp-v1.0.1'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:vscode-kfp-v1.0.1'
       importPolicy:
         importMode: Legacy
       referencePolicy:
@@ -303,6 +315,17 @@ spec:
         opendatahub.io/notebook-python-dependencies: >-
           [{"name":"opencv","version":"4.8.0.74"},{"name":"ultralytics","version":"8.0.130"},{"name":"onnxruntime","version":"1.15.1"}]
         opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9"}]'
+    - name: "2.1.1"
+      from:
+        kind: DockerImage
+        name: quay.io/mmurakam/workbenches:object-detection-v2.1.1
+      importPolicy: {}
+      referencePolicy:
+        type: Local
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"opencv","version":"4.8.0.74"},{"name":"ultralytics","version":"8.0.130"},{"name":"onnxruntime","version":"1.15.1"}]
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9"}]'
 ---
 kind: ImageStream
 apiVersion: image.openshift.io/v1
@@ -361,6 +384,17 @@ spec:
         opendatahub.io/notebook-python-dependencies: >-
           [{"name":"tensorflow","version":"2.11.1"},{"name":"scikit-learn","version":"1.2.2"},{"name":"trino","version":"0.323.0"}]
         opendatahub.io/notebook-software: '[{"name":"Python","version":"3.8"}]'
+    - name: "2.1.0"
+      from:
+        kind: DockerImage
+        name: quay.io/mmurakam/workbenches:fraud-detection-v2.1.0
+      importPolicy: {}
+      referencePolicy:
+        type: Local
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"tensorflow","version":"2.15.1"},{"name":"kfp","version":"2.5.0"},{"name":"scikit-learn","version":"1.4.2"},{"name":"trino","version":"0.323.0"}]
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9"}]'
 ---
 kind: ImageStream
 apiVersion: image.openshift.io/v1
@@ -508,6 +542,157 @@ spec:
       from:
         kind: DockerImage
         name: 'quay.io/rh-aiservices-bu/instructlab-workbench-code-server-cuda:0.1'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: Open Data Hub Tools & Extensions Companion
+    opendatahub.io/notebook-image-name: ODH TEC
+    opendatahub.io/notebook-image-url: 'quay.io/rh-aiservices-bu/odh-tec:latest'
+  name: odh-tec
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: v0.1
+      annotations:
+        opendatahub.io/notebook-python-dependencies: ''
+        opendatahub.io/notebook-software: ''
+        openshift.io/imported-from: 'quay.io/rh-aiservices-bu/odh-tec:latest'
+      from:
+        kind: DockerImage
+        name: 'quay.io/rh-aiservices-bu/odh-tec:latest'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: Insurance claims workbench
+    opendatahub.io/notebook-image-name: IC
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:insurance-claims-v0.1.0'
+  name: insurance-claims
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: '0.1.0'
+      annotations:
+        opendatahub.io/notebook-python-dependencies: ''
+        opendatahub.io/notebook-software: ''
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:insurance-claims-v0.1.0'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:insurance-claims-v0.1.0'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: JupyterLab with R and xgboost
+    opendatahub.io/notebook-image-name: R-xgboost
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:r-xgboost-v0.3.17'
+  name: r-xgboost
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: '0.3.17'
+      annotations:
+        opendatahub.io/notebook-python-dependencies: '[{"name":"xgboost","version":"3.9","visible":true}]'
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9","visible":true},{"name":"R","version":"4.2.2","visible":true}]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:r-xgboost-v0.3.17'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:r-xgboost-v0.3.17'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: JupyterLab based workbench with basic tools
+    opendatahub.io/notebook-image-name: Tools workbench
+    opendatahub.io/notebook-image-url: 'quay.io/mmurakam/workbenches:tools-v0.1.4'
+  name: tools
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: 0.1.4
+      annotations:
+        opendatahub.io/notebook-python-dependencies: >-
+          [{"name":"boto3","version":"1.28.2","visible":true}]
+        opendatahub.io/notebook-software: '[{"name":"Python","version":"3.9","visible":true}]'
+        openshift.io/imported-from: 'quay.io/mmurakam/workbenches:tools-v0.1.4'
+      from:
+        kind: DockerImage
+        name: 'quay.io/mmurakam/workbenches:tools-v0.1.4'
+      importPolicy:
+        importMode: Legacy
+      referencePolicy:
+        type: Source
+---
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  annotations:
+    opendatahub.io/notebook-image-desc: JupyterLab based workbench with Elyra for Airflow backend
+    opendatahub.io/notebook-image-name: Elyra-Airflow
+    opendatahub.io/notebook-image-url: 'quay.io/eformat/elyra-base:0.2.1'
+  name: elyra-airflow
+  namespace: redhat-ods-applications
+  labels:
+    app.kubernetes.io/created-by: byon
+    opendatahub.io/dashboard: 'true'
+    opendatahub.io/notebook-image: 'true'
+spec:
+  lookupPolicy:
+    local: true
+  tags:
+    - name: 0.2.1
+      annotations:
+        opendatahub.io/notebook-python-dependencies: ''
+        opendatahub.io/notebook-software: ''
+        openshift.io/imported-from: 'quay.io/eformat/elyra-base:0.2.1'
+      from:
+        kind: DockerImage
+        name: 'quay.io/eformat/elyra-base:0.2.1'
       importPolicy:
         importMode: Legacy
       referencePolicy:
