@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  labels:
+    app.kubernetes.io/instance: vectordb
+    app.kubernetes.io/name: etcd
+    argocd.argoproj.io/managed-by: openshift-gitops
+    component: milvus
+  name: vectordb-etcd
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: client
+    port: 2379
+    protocol: TCP
+    targetPort: client
+  - name: peer
+    port: 2380
+    protocol: TCP
+    targetPort: peer
+  selector:
+    app.kubernetes.io/instance: vectordb
+    app.kubernetes.io/name: etcd
+    component: milvus
+  sessionAffinity: None
+  type: ClusterIP

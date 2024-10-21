@@ -1,0 +1,135 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app.kubernetes.io/instance: milvus
+    app.kubernetes.io/name: milvus
+    app.kubernetes.io/version: 2.4.0
+    component: milvus
+  name: vectordb-milvus-standalone
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: vectordb
+      app.kubernetes.io/name: milvus
+      component: milvus
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        checksum/config: 525c25e4e18f4d7ba4c1679a2bb6626f70ce2dd3369bfe106601ee09e8eee274
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: vectordb
+        app.kubernetes.io/name: milvus
+        component: milvus
+    spec:
+      containers:
+      - args:
+        - /milvus/tools/run-helm.sh
+        - milvus
+        - run
+        - standalone
+        image: quay.io/rh-data-services/milvus-openshift:v2.3.10
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /healthz
+            port: metrics
+            scheme: HTTP
+          initialDelaySeconds: 90
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: standalone
+        ports:
+        - containerPort: 19530
+          name: milvus
+          protocol: TCP
+        - containerPort: 9091
+          name: metrics
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /healthz
+            port: metrics
+            scheme: HTTP
+          initialDelaySeconds: 90
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /milvus/tools
+          name: tools
+        - mountPath: /milvus/configs/default.yaml
+          name: milvus-config
+          readOnly: true
+          subPath: default.yaml
+        - mountPath: /milvus/configs/user.yaml
+          name: milvus-config
+          readOnly: true
+          subPath: user.yaml
+        - mountPath: /var/lib/milvus
+          name: milvus-data-disk
+        - mountPath: /var/lib/milvus/data
+          name: disk
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - args:
+        - -ec
+        - |-
+          echo -n "Waiting for minio pod in minio namespace"
+          while ! nc -z minio-default-service.minio.svc.cluster.local 9000; do
+            echo -n '.'
+            sleep 1
+          done
+          echo "Minio pod is running in minio namespace"
+        command:
+        - /bin/bash
+        image: image-registry.openshift-image-registry.svc:5000/openshift/tools:latest
+        imagePullPolicy: IfNotPresent
+        name: wait-for-minio
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      - command:
+        - /cp
+        - /run-helm.sh,/merge
+        - /milvus/tools/run-helm.sh,/milvus/tools/merge
+        image: milvusdb/milvus-config-tool:v0.1.2
+        imagePullPolicy: IfNotPresent
+        name: config
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /milvus/tools
+          name: tools
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: default
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir: {}
+        name: tools
+      - configMap:
+          defaultMode: 420
+          name: vectordb-milvus
+        name: milvus-config
+      - name: milvus-data-disk
+        persistentVolumeClaim:
+          claimName: vectordb-milvus
+      - emptyDir: {}
+        name: disk

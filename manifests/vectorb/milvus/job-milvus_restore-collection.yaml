@@ -1,0 +1,87 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: "3"
+    batch.kubernetes.io/job-tracking: ""
+  labels:
+    app.kubernetes.io/instance: ic-shared-milvus
+    component: milvus
+  name: restore-collection
+spec:
+  backoffLimit: 4
+  completionMode: NonIndexed
+  completions: 1
+  parallelism: 1
+  selector:
+    matchLabels:
+      controller-uid: 9d55f0c4-5956-4d51-8777-25f32f054f49
+  suspend: false
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        component: milvus
+        controller-uid: 9d55f0c4-5956-4d51-8777-25f32f054f49
+        job-name: restore-collection
+    spec:
+      containers:
+      - args:
+        - -ec
+        - "# Retrieve the backup from the S3 bucket\ncurl -LO https://rhods-public.s3.amazonaws.com/parasol-insurance-handbook-backup/backup.tar.gz\nmkdir
+          -p backup && tar xvzf backup.tar.gz -C ./backup\n\n# Install the pymilvus
+          package\npip install -q pymilvus==2.3.7\n\ncat << 'EOF' | python3\nimport
+          boto3, os, requests\nfrom pymilvus import MilvusClient\n\n# Connect to the
+          object storage\ns3 = boto3.client(\"s3\",\n        endpoint_url=\"http://minio.ic-shared-minio.svc.cluster.local:9000\",\n
+          \       aws_access_key_id=\"minio\",\n        aws_secret_access_key=\"minio123\")\n\n#
+          Create the milvus buckets\nmilvus_bucket_name = \"milvus-bucket\"\nif milvus_bucket_name
+          not in [bu[\"Name\"] for bu in s3.list_buckets()[\"Buckets\"]]:\n    s3.create_bucket(Bucket=milvus_bucket_name)\n\nmilvus_backup_bucket_name
+          = \"milvus-backup-bucket\"\nif milvus_backup_bucket_name not in [bu[\"Name\"]
+          for bu in s3.list_buckets()[\"Buckets\"]]:\n    s3.create_bucket(Bucket=milvus_backup_bucket_name)\n\ndef
+          upload_to_s3(bucket_name, directory_name):\n    \n    for root, dirs, files
+          in os.walk(directory_name):\n        for file in files:\n            s3.upload_file(os.path.join(root,
+          file), bucket_name, os.path.join(root, file).lstrip('/'))\n\n# Upload the
+          backup to the S3 bucket\nupload_to_s3('milvus-backup-bucket', 'backup')\n\n#
+          Restore the collection from the backup\nurl = 'http://milvus-backup.ic-shared-milvus.svc.cluster.local:8080/api/v1/restore'\nheaders
+          = {'Content-Type': 'application/json'}\ndata = {\n  \"async\": True,\n  \"collection_names\":
+          [\n    \"california_driver_handbook_1_0\"\n  ],\n  \"backup_name\": \"california_driver_handbook_1_0\"\n}\n\nresponse
+          = requests.post(url, headers=headers, json=data)\n\nclient = MilvusClient(\n
+          \   uri=\"http://vectordb-milvus.ic-shared-milvus.svc.cluster.local:19530\",\n
+          \   token=\"root:Milvus\",\n    db_name=\"default\"\n)\n\n# Create the index\nindex_params
+          = client.prepare_index_params()\n\nindex_params.add_index(\n    field_name=\"vector\",
+          \n    index_type=\"AUTOINDEX\",\n    metric_type=\"L2\",\n    params={}\n)\n\nclient.create_index(\n
+          \   collection_name='california_driver_handbook_1_0',\n    index_params=index_params\n)\n\nclient.load_collection(\n
+          \   collection_name='california_driver_handbook_1_0'\n)\n\nEOF"
+        command:
+        - /bin/bash
+        image: image-registry.openshift-image-registry.svc:5000/redhat-ods-applications/s2i-generic-data-science-notebook:1.2
+        imagePullPolicy: IfNotPresent
+        name: add-model
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - args:
+        - -ec
+        - |-
+          echo -n "Waiting for milvus-backup pod in ic-shared-milvus namespace"
+          while ! nc -z milvus-backup.ic-shared-milvus.svc.cluster.local 8080; do
+            echo -n '.'
+            sleep 1
+          done
+          echo "Milvus-backup pod is running in ic-shared-milvus namespace"
+        command:
+        - /bin/bash
+        image: image-registry.openshift-image-registry.svc:5000/openshift/tools:latest
+        imagePullPolicy: IfNotPresent
+        name: wait-for-milvus-backup
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      restartPolicy: Never
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

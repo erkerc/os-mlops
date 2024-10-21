@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  labels:
+    app.kubernetes.io/instance: milvus
+    app.kubernetes.io/name: milvus
+    app.kubernetes.io/version: 2.4.0
+    component: milvus
+  name: vectordb-milvus
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: milvus
+    port: 19530
+    protocol: TCP
+    targetPort: milvus
+  - name: metrics
+    port: 9091
+    protocol: TCP
+    targetPort: metrics
+  selector:
+    app.kubernetes.io/instance: vectordb
+    app.kubernetes.io/name: milvus
+    component: milvus
+  sessionAffinity: None
+  type: ClusterIP

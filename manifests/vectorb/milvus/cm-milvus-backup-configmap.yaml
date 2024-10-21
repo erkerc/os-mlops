@@ -1,0 +1,22 @@
+apiVersion: v1
+data:
+  backup.yaml: "log:\n  level: info\n  console: true\n  file:\n    rootPath: \"/var/log/milvus-backup/logs\"\n\nhttp:\n
+    \ simpleResponse: true\n\nmilvus:\n  address: vectordb-milvus.ic-shared-milvus.svc.cluster.local\n
+    \ port: 19530\n  authorizationEnabled: true\n  tlsMode: 0\n  user: \"root\"\n
+    \ password: \"Milvus\"\n\nminio:\n  storageType: \"minio\"\n  address: minio.ic-shared-minio.svc.cluster.local\n
+    \ port: 9000\n  accessKeyID: minio\n  secretAccessKey: minio123\n  useSSL: false\n
+    \ useIAM: false\n  iamEndpoint: \"\"\n  bucketName: \"milvus-bucket\"\n  rootPath:
+    \"file\"      \n  backupBucketName: \"milvus-backup-bucket\"\n  backupRootPath:
+    \"backup\"\n\nbackup:\n  maxSegmentGroupSize: 2G\n\n  parallelism: \n    backupCollection:
+    4\n    copydata: 128\n    restoreCollection: 2\n  \n  keepTempFiles: false\n  \n
+    \ gcPause:\n    enable: true\n    seconds: 7200\n    address: http://vectordb-milvus.ic-shared-milvus.svc.cluster.local:9091\n
+    \ "
+kind: ConfigMap
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  labels:
+    app: milvus
+    app.kubernetes.io/instance: ic-shared-milvus
+    component: milvus
+  name: milvus-backup-configmap

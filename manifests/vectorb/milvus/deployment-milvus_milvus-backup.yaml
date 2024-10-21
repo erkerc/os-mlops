@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: milvus
+    app.kubernetes.io/instance: milvus
+    component: milvus
+  name: milvus-backup
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: milvus-backup
+      component: milvus
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: milvus-backup
+        component: milvus
+    spec:
+      containers:
+      - args:
+        - server
+        - --config=/opt/app-root/src/milvus-backup/configs/backup.yaml
+        - -p
+        - "8080"
+        image: quay.io/rh-aiservices-bu/milvus-backup:v0.4.12
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: http
+            scheme: HTTP
+          periodSeconds: 100
+          successThreshold: 1
+          timeoutSeconds: 8
+        name: milvus-backup
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: http
+            scheme: HTTP
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "2"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 2Gi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/app-root/src/milvus-backup/configs/backup.yaml
+          name: config-volume
+          readOnly: true
+          subPath: backup.yaml
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - args:
+        - -ec
+        - |-
+          echo -n "Waiting for minio pod in minio namespace"
+          while ! nc -z minio-default-service.minio.svc.cluster.local 9000; do
+            echo -n '.'
+            sleep 1
+          done
+          echo "Minio pod is running in minio namespace"
+        command:
+        - /bin/bash
+        image: image-registry.openshift-image-registry.svc:5000/openshift/tools:latest
+        imagePullPolicy: IfNotPresent
+        name: wait-for-minio
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      - args:
+        - -ec
+        - |-
+          echo -n "Waiting for milvus pod in vectordbnamespace"
+          while ! nc -z vectordb-milvus.vectordb.svc.cluster.local 19530; do
+            echo -n '.'
+            sleep 1
+          done
+          echo "Milvus pod is running in vectordbnamespace"
+        command:
+        - /bin/bash
+        image: image-registry.openshift-image-registry.svc:5000/openshift/tools:latest
+        imagePullPolicy: IfNotPresent
+        name: wait-for-milvus
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: backup.yaml
+            path: backup.yaml
+          name: milvus-backup-configmap
+        name: config-volume

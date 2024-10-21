@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  labels:
+    app.kubernetes.io/instance: milvus
+    app.kubernetes.io/name: milvus-backup
+    component: milvus
+  name: milvus-backup
+spec:
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: milvus-backup
+    port: 8080
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: milvus-backup
+    component: milvus
+  sessionAffinity: None
+  type: ClusterIP

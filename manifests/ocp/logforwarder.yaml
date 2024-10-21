@@ -1,0 +1,27 @@
+apiVersion: "logging.openshift.io/v1"
+kind: ClusterLogForwarder
+metadata:
+  name: instance
+  namespace: openshift-logging
+spec:
+  serviceAccountName: default
+  outputs:
+   - name: elasticsearch-secure 
+     type: "elasticsearch"
+     url: https://elasticsearch.openshift-logging.svc:9200
+     secret:
+        name: elasticsearch
+  inputs: 
+   - name: my-app-logs
+     application:
+        namespaces:
+        - redhat-ods-applications
+        - spark-apps
+        - spark-code-server
+        - shared-database   
+  pipelines:
+   - name: my-app 
+     inputRefs:
+      - my-app-logs
+     outputRefs:
+      - elasticsearch-secure 

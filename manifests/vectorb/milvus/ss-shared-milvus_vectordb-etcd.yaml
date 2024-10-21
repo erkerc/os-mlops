@@ -1,0 +1,157 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  labels:
+    app.kubernetes.io/instance: milvus
+    app.kubernetes.io/name: etcd
+    component: milvus
+  name: vectordb-etcd
+spec:
+  podManagementPolicy: Parallel
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: vectordb
+      app.kubernetes.io/name: etcd
+      component: milvus
+  serviceName: vectordb-etcd-headless
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: vectordb
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: etcd
+        component: milvus
+        helm.sh/chart: etcd-6.3.3
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: vectordb
+                  app.kubernetes.io/name: etcd
+                  component: milvus
+              namespaces:
+              - vectordb
+              topologyKey: kubernetes.io/hostname
+            weight: 1
+      containers:
+      - env:
+        - name: BITNAMI_DEBUG
+          value: "false"
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: ETCDCTL_API
+          value: "3"
+        - name: ETCD_ON_K8S
+          value: "yes"
+        - name: ETCD_START_FROM_SNAPSHOT
+          value: "no"
+        - name: ETCD_DISASTER_RECOVERY
+          value: "no"
+        - name: ETCD_NAME
+          value: $(MY_POD_NAME)
+        - name: ETCD_DATA_DIR
+          value: /bitnami/etcd/data
+        - name: ETCD_LOG_LEVEL
+          value: info
+        - name: ALLOW_NONE_AUTHENTICATION
+          value: "yes"
+        - name: ETCD_ADVERTISE_CLIENT_URLS
+          value: http://$(MY_POD_NAME).vectordb-etcd-headless.vectordb.svc.cluster.local:2379
+        - name: ETCD_LISTEN_CLIENT_URLS
+          value: http://0.0.0.0:2379
+        - name: ETCD_INITIAL_ADVERTISE_PEER_URLS
+          value: http://$(MY_POD_NAME).vectordb-etcd-headless.vectordb.svc.cluster.local:2380
+        - name: ETCD_LISTEN_PEER_URLS
+          value: http://0.0.0.0:2380
+        - name: ETCD_AUTO_COMPACTION_MODE
+          value: revision
+        - name: ETCD_AUTO_COMPACTION_RETENTION
+          value: "1000"
+        - name: ETCD_QUOTA_BACKEND_BYTES
+          value: "4294967296"
+        - name: ETCD_HEARTBEAT_INTERVAL
+          value: "500"
+        - name: ETCD_ELECTION_TIMEOUT
+          value: "2500"
+        image: docker.io/milvusdb/etcd:3.5.5-r4
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - /opt/bitnami/scripts/etcd/healthcheck.sh
+          failureThreshold: 5
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 10
+        name: etcd
+        ports:
+        - containerPort: 2379
+          name: client
+          protocol: TCP
+        - containerPort: 2380
+          name: peer
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - /opt/bitnami/scripts/etcd/healthcheck.sh
+          failureThreshold: 5
+          initialDelaySeconds: 60
+          periodSeconds: 20
+          successThreshold: 1
+          timeoutSeconds: 10
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /bitnami/etcd
+          name: data
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: default
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 30
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      creationTimestamp: null
+      labels:
+        component: milvus
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+      volumeMode: Filesystem
+    status:
+      phase: Pending
