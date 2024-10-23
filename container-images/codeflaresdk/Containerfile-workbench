@@ -1,0 +1,8 @@
+FROM quay.io/modh/odh-minimal-notebook-container:v3-2024b-20241018-0a8a0b8
+
+RUN pip install pip==22.3.1 setuptools==65.3.0
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt && \
+    chmod -R g+w /opt/app-root/lib/python3.11/site-packages && \
+    fix-permissions /opt/app-root -P

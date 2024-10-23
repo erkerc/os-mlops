@@ -554,7 +554,7 @@ apiVersion: image.openshift.io/v1
 metadata:
   annotations:
     opendatahub.io/notebook-image-desc: Open Data Hub Tools & Extensions Companion
-    opendatahub.io/notebook-image-name: ODH TEC
+    opendatahub.io/notebook-image-name: Open Data Hub Tools
     opendatahub.io/notebook-image-url: 'quay.io/rh-aiservices-bu/odh-tec:latest'
   name: odh-tec
   namespace: redhat-ods-applications
